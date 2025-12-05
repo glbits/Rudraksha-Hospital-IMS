@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  /* Deep Forest Green - High contrast for white text */
+  --color-primary: #1A2F23;
+
+  /* Sage Green - For buttons/active states */
+  --color-accent: #5D7A66;
+
+  /* Softer Gray-Green - For cards/inputs */
+  --color-secondary: #E3E8E3;
+
+  /* Light Grayish Green - Main background */
+  --color-background: #F0F2F0;
+
+  /* Dark Text - For main content */
+  --color-darkText: #111827;
+}
+
+/* Base Application Styles */
+body {
+  /* Using the variables defined above */
+  @apply bg-background text-gray-900;
+}
+
+/* Custom Scrollbar for the dark theme feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 rounded;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500;
+}
