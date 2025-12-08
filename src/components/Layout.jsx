@@ -7,14 +7,16 @@ import {
   LogOut, 
   Activity,
   UserPlus,
-  Users 
+  Users,
+  BarChart3,
+  Pill // <--- Import Pill Icon
 } from 'lucide-react';
 
 const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Robust parsing of user info from localStorage
+  // Robust parsing
   let userInfo = {};
   try {
     const stored = localStorage.getItem('userInfo');
@@ -25,31 +27,36 @@ const Layout = () => {
     console.error("Error parsing user info:", error);
   }
   
-  // Ensure userInfo is a valid object
   userInfo = userInfo && typeof userInfo === 'object' ? userInfo : {};
+  
+  // Access Control Logic
   const isAdmin = userInfo.role === 'admin';
+  const isPharmacist = userInfo.role === 'pharmacist';
+  const hasPharmacyAccess = isAdmin || isPharmacist;
 
   const handleLogout = () => {
     localStorage.removeItem('userInfo');
     navigate('/login');
   };
 
-  // Storing pre-rendered elements avoids "Objects are not valid" or "Functions are not valid" rendering issues
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'My Profile', path: '/profile', icon: <UserCircle size={20} /> },
     { name: 'Attendance', path: '/attendance', icon: <CalendarCheck size={20} /> },
   ];
 
+  if (hasPharmacyAccess) {
+    navItems.push({ name: 'Pharmacy', path: '/pharmacy', icon: <Pill size={20} /> });
+  }
+
   if (isAdmin) {
     navItems.push({ name: 'Add Employee', path: '/add-employee', icon: <UserPlus size={20} /> });
-    // NEW LINK
     navItems.push({ name: 'Staff Attendance', path: '/admin-attendance', icon: <Users size={20} /> });
+    navItems.push({ name: 'Reports', path: '/reports', icon: <BarChart3 size={20} /> });
   }
 
   return (
     <div className="flex h-screen bg-background text-gray-900">
-      {/* SIDEBAR */}
       <aside className="w-64 bg-primary text-white flex flex-col shadow-2xl z-10">
         <div className="p-6 border-b border-white/10 flex items-center space-x-3">
           <div className="bg-white/10 p-2 rounded-lg backdrop-blur-sm">
@@ -63,7 +70,6 @@ const Layout = () => {
 
         <div className="p-6 border-b border-white/5 bg-black/20">
           <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Signed in as</p>
-          {/* Safeguard: Ensure we render strings, not objects */}
           <p className="font-bold truncate text-white">
             {typeof userInfo.name === 'string' ? userInfo.name : 'User'}
           </p>
@@ -85,7 +91,6 @@ const Layout = () => {
                 }`
               }
             >
-              {/* Render the pre-rendered element directly */}
               {item.icon}
               <span>{item.name}</span>
             </NavLink>
@@ -103,7 +108,6 @@ const Layout = () => {
         </div>
       </aside>
 
-      {/* MAIN CONTENT AREA */}
       <main className="flex-1 flex flex-col h-full overflow-hidden relative">
         <header className="bg-white border-b border-gray-200 h-16 flex items-center px-8 justify-between shrink-0">
           <h2 className="text-xl font-bold text-primary capitalize tracking-tight">

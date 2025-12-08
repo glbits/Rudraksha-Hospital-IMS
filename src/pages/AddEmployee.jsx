@@ -6,9 +6,8 @@ const AddEmployee = () => {
     name: '',
     role: 'doctor',
     department: '',
-    password: 'password123', // Default initial password
+    password: 'password123',
     shiftType: 'Day Shift',
-    // Simple default schedule
     scheduledHours: [
       { day: 'Mon', start: '09:00', end: '17:00' },
       { day: 'Tue', start: '09:00', end: '17:00' },
@@ -48,7 +47,6 @@ const AddEmployee = () => {
           type: 'success', 
           message: `Success! Employee created with ID: ${data.employeeId}` 
         });
-        // Reset name only to allow quick addition of next employee
         setFormData({ ...formData, name: '' });
       } else {
         setStatus({ type: 'error', message: data.message || 'Failed to create user' });
@@ -72,7 +70,6 @@ const AddEmployee = () => {
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg border border-secondary p-8 space-y-6">
         
-        {/* Status Message */}
         {status.message && (
           <div className={`p-4 rounded-lg flex items-center space-x-3 ${
             status.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 
@@ -85,7 +82,6 @@ const AddEmployee = () => {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Name */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
             <input
@@ -99,7 +95,6 @@ const AddEmployee = () => {
             />
           </div>
 
-          {/* Department */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Department</label>
             <input
@@ -109,11 +104,10 @@ const AddEmployee = () => {
               value={formData.department}
               onChange={handleChange}
               className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-              placeholder="e.g. Cardiology"
+              placeholder="e.g. Pharmacy / Cardiology"
             />
           </div>
 
-          {/* Role Selection */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Role</label>
             <select
@@ -125,12 +119,12 @@ const AddEmployee = () => {
               <option value="doctor">Doctor</option>
               <option value="nurse">Nurse</option>
               <option value="guard">Guard</option>
+              <option value="pharmacist">Pharmacist</option> {/* Added Option */}
               <option value="admin">Admin</option>
               <option value="other">Other Staff</option>
             </select>
           </div>
 
-          {/* Shift Type */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Default Shift</label>
             <select
@@ -145,7 +139,6 @@ const AddEmployee = () => {
             </select>
           </div>
 
-          {/* Password */}
           <div className="md:col-span-2">
             <label className="block text-sm font-semibold text-gray-700 mb-2">Initial Password</label>
             <input
