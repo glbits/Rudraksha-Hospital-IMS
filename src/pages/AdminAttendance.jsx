@@ -57,8 +57,8 @@ const EmployeeRow = ({ emp, stats, onManualAction }) => {
           className="flex items-start text-xs text-gray-600 cursor-pointer hover:bg-gray-100 p-2 rounded-md transition-colors" 
           title="Click to expand/collapse full address"
         >
-          <MapPin size={14} className={`mr-2 mt-0.5 flex-shrink-0 ${locationType === 'Manual' ? 'text-orange-500' : 'text-blue-500'}`} />
-          <span className={`${isAddressExpanded ? 'break-words whitespace-normal' : 'truncate'} block leading-relaxed`}>
+          <MapPin size={14} className={`mr-2 mt-0.5 shrink-0 ${locationType === 'Manual' ? 'text-orange-500' : 'text-blue-500'}`} />
+          <span className={`${isAddressExpanded ? 'wrap-break-words whitespace-normal' : 'truncate'} block leading-relaxed`}>
             {locationDisplay}
           </span>
         </div>

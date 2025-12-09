@@ -7,7 +7,11 @@ import {
   LogOut, 
   Activity,
   UserPlus,
-  Users 
+  Users,
+  BarChart3,
+  Pill,
+  Stethoscope,
+  ClipboardList
 } from 'lucide-react';
 
 const Layout = () => {
@@ -27,24 +31,41 @@ const Layout = () => {
   
   // Ensure userInfo is a valid object
   userInfo = userInfo && typeof userInfo === 'object' ? userInfo : {};
-  const isAdmin = userInfo.role === 'admin';
+  
+  // Access Control Logic
+  const role = userInfo.role || 'guest';
+  const isAdmin = role === 'admin';
+  const isPharmacist = role === 'pharmacist' || isAdmin;
+  const isDoctor = role === 'doctor' || isAdmin;
+  const isNurse = role === 'nurse' || isAdmin;
 
   const handleLogout = () => {
     localStorage.removeItem('userInfo');
     navigate('/login');
   };
 
-  // Storing pre-rendered elements avoids "Objects are not valid" or "Functions are not valid" rendering issues
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'My Profile', path: '/profile', icon: <UserCircle size={20} /> },
     { name: 'Attendance', path: '/attendance', icon: <CalendarCheck size={20} /> },
   ];
 
+  if (isPharmacist) {
+    navItems.push({ name: 'Pharmacy', path: '/pharmacy', icon: <Pill size={20} /> });
+  }
+
+  if (isDoctor) {
+    navItems.push({ name: 'Request Assistance', path: '/doctor-requests', icon: <Stethoscope size={20} /> });
+  }
+
+  if (isNurse) {
+    navItems.push({ name: 'Nurse Station', path: '/nurse-tasks', icon: <ClipboardList size={20} /> });
+  }
+
   if (isAdmin) {
     navItems.push({ name: 'Add Employee', path: '/add-employee', icon: <UserPlus size={20} /> });
-    // NEW LINK
     navItems.push({ name: 'Staff Attendance', path: '/admin-attendance', icon: <Users size={20} /> });
+    navItems.push({ name: 'Reports', path: '/reports', icon: <BarChart3 size={20} /> });
   }
 
   return (
@@ -63,7 +84,6 @@ const Layout = () => {
 
         <div className="p-6 border-b border-white/5 bg-black/20">
           <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Signed in as</p>
-          {/* Safeguard: Ensure we render strings, not objects */}
           <p className="font-bold truncate text-white">
             {typeof userInfo.name === 'string' ? userInfo.name : 'User'}
           </p>
@@ -72,7 +92,7 @@ const Layout = () => {
           </p>
         </div>
 
-        <nav className="flex-1 py-6 px-3 space-y-2">
+        <nav className="flex-1 py-6 px-3 space-y-2 overflow-y-auto">
           {navItems.map((item) => (
             <NavLink
               key={item.path}
@@ -85,7 +105,6 @@ const Layout = () => {
                 }`
               }
             >
-              {/* Render the pre-rendered element directly */}
               {item.icon}
               <span>{item.name}</span>
             </NavLink>

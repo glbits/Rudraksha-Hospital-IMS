@@ -1,34 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
-  User, 
-  CreditCard, 
-  Building2, 
-  Clock, 
-  CalendarDays,
-  MapPin,
-  Camera,
-  Loader2,
-  CheckCircle,
-  AlertCircle,
-  X
+  User, CreditCard, Building2, Clock, CalendarDays, MapPin, 
+  Camera, Loader2, CheckCircle, AlertCircle, X
 } from 'lucide-react';
 
 const ProfileCard = ({ user }) => {
   const fileInputRef = useRef(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
-  
-  // State for Toast Notification
-  const [toast, setToast] = useState(null); // { type: 'success'|'error', message: '' }
+  const [toast, setToast] = useState(null);
 
-  // Sync state if user prop changes
   useEffect(() => {
     if (user?.photoUrl) {
       setPhotoPreview(user.photoUrl);
     }
   }, [user]);
 
-  // Auto-hide toast after 3 seconds
   useEffect(() => {
     if (toast) {
       const timer = setTimeout(() => setToast(null), 3000);
@@ -56,21 +43,17 @@ const ProfileCard = ({ user }) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    // 1. Size Cap Validation (2MB limit)
     const MAX_SIZE = 2 * 1024 * 1024; // 2MB
     if (file.size > MAX_SIZE) {
       showToast('error', "File size is too large. Max limit is 2MB.");
       return;
     }
 
-    // 2. Convert to Base64 and Upload
     const reader = new FileReader();
     reader.readAsDataURL(file);
     
     reader.onloadend = async () => {
       const base64Image = reader.result;
-      
-      // Optimistic update
       setPhotoPreview(base64Image);
       setUploading(true);
 
@@ -83,7 +66,6 @@ const ProfileCard = ({ user }) => {
            return;
         }
 
-        // 3. Send to Backend
         const response = await fetch('http://localhost:5000/api/users/profile/photo', {
           method: 'PUT',
           headers: {
@@ -98,18 +80,14 @@ const ProfileCard = ({ user }) => {
         }
 
         const updatedData = await response.json();
-        
-        // Success Toast
         showToast('success', "Profile photo updated successfully!");
-
-        // 4. Update Local Storage
+        
         const newUserInfo = { ...storedInfo, photoUrl: updatedData.photoUrl };
         localStorage.setItem('userInfo', JSON.stringify(newUserInfo));
 
       } catch (error) {
         console.error("Upload Error:", error);
         showToast('error', "Failed to save photo to database.");
-        // Revert to original if failed
         setPhotoPreview(user.photoUrl);
       } finally {
         setUploading(false);
@@ -120,16 +98,12 @@ const ProfileCard = ({ user }) => {
   return (
     <>
       <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-secondary relative">
-        {/* 1. Header Banner */}
         <div className="h-32 bg-primary relative">
-          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top_right,var(--tw-gradient-stops))]from-accent to-transparent"></div>
+          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-accent to-transparent"></div>
         </div>
 
         <div className="px-8 pb-8 relative">
-          {/* 2. Profile Image & Header Info */}
           <div className="flex flex-col md:flex-row items-center md:items-end -mt-12 mb-8">
-            
-            {/* Profile Picture Container */}
             <div className="relative group cursor-pointer" onClick={handleImageClick}>
               <div className={`h-32 w-32 rounded-full border-4 border-white shadow-md bg-secondary flex items-center justify-center overflow-hidden relative ${uploading ? 'opacity-70' : ''}`}>
                 {photoPreview ? (
@@ -138,7 +112,6 @@ const ProfileCard = ({ user }) => {
                   <User size={64} className="text-accent opacity-50" />
                 )}
                 
-                {/* Overlay */}
                 <div className={`absolute inset-0 bg-black/50 flex items-center justify-center transition-opacity duration-200 ${uploading ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
                   {uploading ? (
                     <Loader2 className="text-white animate-spin" size={24} />
@@ -147,16 +120,8 @@ const ProfileCard = ({ user }) => {
                   )}
                 </div>
               </div>
-              
               <div className="absolute bottom-1 right-1 h-6 w-6 bg-green-500 border-2 border-white rounded-full z-10" title="Active"></div>
-              
-              <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleFileChange} 
-                className="hidden" 
-                accept="image/*"
-              />
+              <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
             </div>
             
             <div className="mt-4 md:mt-0 md:ml-6 text-center md:text-left flex-1">
@@ -171,12 +136,9 @@ const ProfileCard = ({ user }) => {
             </div>
           </div>
 
-          {/* 3. Info Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            {/* Left Column: Core Info */}
             <div className="bg-background rounded-xl p-6 space-y-4 border border-secondary/50">
               <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Employee Details</h3>
-              
               <div className="flex items-center space-x-4">
                 <div className="p-2 bg-white rounded-lg shadow-sm text-accent">
                   <CreditCard size={20} />
@@ -186,7 +148,6 @@ const ProfileCard = ({ user }) => {
                   <p className="text-gray-900 font-semibold">{user.employeeId}</p>
                 </div>
               </div>
-
               <div className="flex items-center space-x-4">
                 <div className="p-2 bg-white rounded-lg shadow-sm text-accent">
                   <Building2 size={20} />
@@ -196,7 +157,6 @@ const ProfileCard = ({ user }) => {
                   <p className="text-gray-900 font-semibold">{user.department}</p>
                 </div>
               </div>
-
                <div className="flex items-center space-x-4 opacity-70">
                 <div className="p-2 bg-white rounded-lg shadow-sm text-accent">
                   <MapPin size={20} />
@@ -208,10 +168,8 @@ const ProfileCard = ({ user }) => {
               </div>
             </div>
 
-            {/* Right Column: Shift Info */}
             <div className="bg-secondary/30 rounded-xl p-6 space-y-4 border border-secondary/50">
               <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Shift Configuration</h3>
-              
               <div className="flex items-center space-x-4">
                 <div className="p-2 bg-white rounded-lg shadow-sm text-primary">
                   <Clock size={20} />
@@ -221,7 +179,6 @@ const ProfileCard = ({ user }) => {
                   <p className="text-primary font-bold">{user.shiftType}</p>
                 </div>
               </div>
-
               <div className="mt-4">
                  <p className="text-xs text-gray-500 font-medium mb-3 flex items-center">
                    <CalendarDays size={14} className="mr-1" /> Weekly Schedule
@@ -242,7 +199,6 @@ const ProfileCard = ({ user }) => {
         </div>
       </div>
 
-      {/* Custom Toast Notification */}
       {toast && (
         <div className={`fixed bottom-6 right-6 z-50 flex items-center space-x-3 px-6 py-4 rounded-lg shadow-2xl transform transition-all duration-300 animate-in slide-in-from-bottom-5 fade-in ${
           toast.type === 'error' ? 'bg-red-50 dark:bg-red-900 border border-red-200' : 'bg-green-50 dark:bg-green-900 border border-green-200'
